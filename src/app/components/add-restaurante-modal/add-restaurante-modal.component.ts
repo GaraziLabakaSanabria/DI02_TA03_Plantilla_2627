@@ -1,13 +1,14 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
-import { IonicModule, ModalController, ToastController } from '@ionic/angular';
+import { ModalController, ToastController } from '@ionic/angular';
 import { Restaurante } from '../../interface/restaurante';
 import { RestauranteService } from '../../services/restaurante.service';
+import { IonItem, IonInput, IonText, IonContent, IonList, IonTitle, IonButtons, IonHeader, IonToolbar, IonButton, IonSpinner } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-add-restaurante-modal',
   standalone: true,
-  imports: [IonicModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule, IonItem, IonInput, IonText, IonContent, IonList, IonTitle, IonButtons, IonHeader, IonToolbar, IonButton, IonSpinner],
   templateUrl: './add-restaurante-modal.component.html',
 })
 export class AddRestauranteModalComponent {
@@ -23,12 +24,19 @@ export class AddRestauranteModalComponent {
   //     - Añadir los campos necesarios y controlar las que son obligatorias
   //     - Al FormGroup le estoy llamando "form", podéis poner el nombre que preferáis
   form = this.fb.nonNullable.group({
-
+      documentName: ['', [Validators.required]],
+    territory: ['', [Validators.required]],
+    locality: [''],
+    address: [''],
+    phone: [''],
+    web: [''],
+    michelinStar:[''],
+    repsolSun:['']
   });
 
   cancelar() {
     //TODO - Haremos un dismiss (data, role), siendo data = null y role = 'cancel'
-
+    this.modalCtrl.dismiss(null, 'cancel');
   }
 
   //TODO - Importante ponerlo siempre, cuando el formulario sea invalid ponemos todos los campos como touched para mostrar mensajes de error
@@ -43,11 +51,12 @@ export class AddRestauranteModalComponent {
       //TODO - Añadir const restaurante: Restaurante... del enunciado. 
       // Si el objeto restaurante os da error al copiar, es porque en el HTML faltan añadir los campos necesarios.
       // Para poder crear el objeto restaurante de tipo Restaurante, necesitamos los campos del HTML para poder completar el objeto en su totalidad.
-
+      const restaurante: Restaurante = this.form.getRawValue();
       //Llamamos al servicio para añadir el restaurante en Firebase
+      await this.restauranteService.addRestaurante(restaurante);
       
       //Hamos el dismiss del ModalController y en este caso dato: restaurante y role: 'confirm'
-
+      this.modalCtrl.dismiss(restaurante, 'confirm');
     } catch {
       //Si falla podemos mostrar un Toast para notificar al usuario
       const toast = await this.toastCtrl.create({

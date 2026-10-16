@@ -4,6 +4,7 @@ import { Restaurante } from '../interface/restaurante';
 
 @Injectable({ providedIn: 'root' })
 export class RestauranteService {
+  [x: string]: any;
 
   private firestore = inject(Firestore);
   private readonly COLECCION = 'restaurantesColeccion';

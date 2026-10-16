@@ -8,7 +8,6 @@ import restaurantesJSON from '../../assets/datos/restaurantes.json';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [IonicModule],
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss']
 })
